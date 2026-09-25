@@ -1,5 +1,19 @@
+# Node
 node_modules/
 dist/
+
+# Environment variables
 .env
-.env.*
-!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

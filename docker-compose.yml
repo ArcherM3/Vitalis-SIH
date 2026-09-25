@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: vitalis
+      POSTGRES_PASSWORD: vitalis
+      POSTGRES_DB: vitalis
+    ports: ["5432:5432"]
+    volumes: [vitalis_db:/var/lib/postgresql/data]
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports: ["1883:1883", "9001:9001"]
+    volumes: ["./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro"]
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://vitalis:vitalis@db:5432/vitalis
+      JWT_SECRET: change-this-in-production
+      CORS_ORIGINS: http://localhost:5173
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+    ports: ["8000:8000"]
+    depends_on: [db, mosquitto]
+  frontend:
+    build: ./frontend
+    ports: ["5173:5173"]
+    depends_on: [backend]
+volumes:
+  vitalis_db:
